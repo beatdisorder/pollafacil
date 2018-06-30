@@ -1,16 +1,18 @@
 # Configuracion de la aplicacion
 pollafacil:
-  watchPath: /opt/pollafacil/
-  readpath: /opt/pollafacil/planillas
   resultFile: /opt/pollafacil/resultFile.xlsx
-  commonPrefixPlanilla: 'Pronosticos Primera Fase '
-  
+# Fase de grupo
+  readPathFaseGrupo: /opt/pollafacil/planillas/fase_grupo
+  prefixFaseGrupo: 'Pronosticos Primera Fase '
+# Octavos
+  readPathOctavos: /opt/pollafacil/planillas/octavos
+  prefixOctavos: 'Pronosticos_Octavos _Rusia_2018_'
 # Identificacion del servicio 
 spring:
   application:
     name: pollafacil
   resources:
-    chain:
+    chain:	
       strategy:
         content:
           enabled: true

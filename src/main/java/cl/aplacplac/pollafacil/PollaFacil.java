@@ -76,10 +76,16 @@ public class PollaFacil {
 
 	@Autowired
 	private Environment environment;
-
-	private String readPath;
+	
+	// Archivos resultados
 	private String resultFile;
-	private String commonPrefixPlanilla;
+	
+	// Fase Grupo
+	private String readPathFaseGrupo;
+	private String prefixFaseGrupo;
+	// Fase Grupo
+	private String readPathOctavos;
+	private String prefixOctavos;
 
 	private ArrayList<Participante> participantes;
 	private ArrayList<Partido> resultados;
@@ -101,9 +107,14 @@ public class PollaFacil {
 
 	@PostConstruct
 	public void construct() throws Exception {
-		this.readPath = environment.getProperty("pollafacil.readpath");
+		// cargado variables
 		this.resultFile = environment.getProperty("pollafacil.resultFile");
-		this.commonPrefixPlanilla = environment.getProperty("pollafacil.commonPrefixPlanilla");
+		
+		this.readPathFaseGrupo = environment.getProperty("pollafacil.readPathFaseGrupo");
+		this.prefixFaseGrupo = environment.getProperty("pollafacil.prefixFaseGrupo");
+		
+		this.readPathOctavos = environment.getProperty("pollafacil.readPathOctavos");
+		this.prefixFaseGrupo = environment.getProperty("pollafacil.prefixOctavos");
 		refresh();
 	}
 
@@ -503,29 +514,31 @@ public class PollaFacil {
 	}
 
 	private void loadPlanillas() throws Exception {
-		if (readPath != null) {
-			File folder = new File(readPath);
-			logger.info("folder.listFiles().length: " + folder.listFiles().length);
-			for (final File fileEntry : folder.listFiles()) {
-				if (!(fileEntry.isDirectory()) && checkExtension(fileEntry)) {
-					try {
-						String name = fileEntry.getName();
-						name = name.replaceAll("\\Q" + commonPrefixPlanilla + "\\E", "");
-						for (String ext : xlsxExtension) {
-							name = name.replaceAll("\\Q" + "." + ext + "\\E", "");
+		if (readPathFaseGrupo != null) {
+			File folder = new File(readPathFaseGrupo);
+			if(folder.exists()) {
+				logger.info("folder.listFiles().length: " + folder.listFiles().length);
+				for (final File fileEntry : folder.listFiles()) {
+					if (!(fileEntry.isDirectory()) && checkExtension(fileEntry)) {
+						try {
+							String name = fileEntry.getName();
+							name = name.replaceAll("\\Q" + prefixFaseGrupo + "\\E", "");
+							for (String ext : xlsxExtension) {
+								name = name.replaceAll("\\Q" + "." + ext + "\\E", "");
+							}
+							participantes.add(getParticipante(name, fileEntry));
+						} catch (Exception e) {
+							e.printStackTrace();
+							logger.error("\n*******************************************" 
+									+ "Error cargando " + fileEntry.getName() + ": " + e.getMessage()
+									+ "\n*******************************************\n");
+							throw e;
 						}
-						participantes.add(getParticipante(name, fileEntry));
-					} catch (Exception e) {
-						e.printStackTrace();
-						logger.error("\n*******************************************" 
-								+ "Error cargando " + fileEntry.getName() + ": " + e.getMessage()
-								+ "\n*******************************************\n");
-						throw e;
+					} else {
+						logger.error("\n*******************************************\n" 
+						+ "\nNo se logro cargar planilla: " + fileEntry.getName() 
+						+ "\n*******************************************\n");
 					}
-				} else {
-					logger.error("\n*******************************************\n" 
-					+ "\nNo se logro cargar planilla: " + fileEntry.getName() 
-					+ "\n*******************************************\n");
 				}
 			}
 		} else {
