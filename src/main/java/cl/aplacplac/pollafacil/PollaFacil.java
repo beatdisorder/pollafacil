@@ -20,6 +20,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.Environment;
@@ -48,16 +49,9 @@ public class PollaFacil {
 			"xlsx"
 			, "xlsm" 
 	};
-	private final String[] gruposPrimerFase = new String[] { 
-			"GRUPO A"
-			, "GRUPO B"
-			, "GRUPO C"
-			, "GRUPO D"
-			, "GRUPO E"
-			, "GRUPO F"
-			, "GRUPO G"
-			, "GRUPO H" 
-	};
+	
+	@Autowired
+	Environment env;
 
 	private final String hojaReglas = "REGLAS";
 	@SuppressWarnings("unused")
@@ -73,19 +67,30 @@ public class PollaFacil {
 	@SuppressWarnings("unused")
 	private final String hojaFinal = "FINAL";
 	private int i = 0;
-
-	@Autowired
-	private Environment environment;
+	
+	@Value("${pollaFacil.domain}")
+	private String domain;
 	
 	// Archivos resultados
+	@Value("${pollaFacil.faseActual}")
+	private Integer faseActual;
+		
+	// Archivos resultados
+	@Value("${pollaFacil.resultFile}")
 	private String resultFile;
 	
 	// Fase Grupo
-	private String readPathFaseGrupo;
-	private String prefixFaseGrupo;
-	// Fase Grupo
-	private String readPathOctavos;
-	private String prefixOctavos;
+	@Value("${pollaFacil.faseGrupo.readPath}")
+	private String faseGrupoReadPath;
+	@Value("${pollaFacil.faseGrupo.prefix}")
+	private String faseGrupoPrefix;
+	private String[] faseGrupoSheets;
+	
+	// Octavos
+	@Value("${pollaFacil.octavos.readPath}")
+	private String octavosReadPath;
+	@Value("${pollaFacil.octavos.prefix}")
+	private String octavosPrefix;
 
 	private ArrayList<Participante> participantes;
 	private ArrayList<Partido> resultados;
@@ -107,14 +112,8 @@ public class PollaFacil {
 
 	@PostConstruct
 	public void construct() throws Exception {
-		// cargado variables
-		this.resultFile = environment.getProperty("pollafacil.resultFile");
-		
-		this.readPathFaseGrupo = environment.getProperty("pollafacil.readPathFaseGrupo");
-		this.prefixFaseGrupo = environment.getProperty("pollafacil.prefixFaseGrupo");
-		
-		this.readPathOctavos = environment.getProperty("pollafacil.readPathOctavos");
-		this.prefixFaseGrupo = environment.getProperty("pollafacil.prefixOctavos");
+		faseGrupoSheets = env.getProperty("pollaFacil.faseGrupo.sheets").split("-");
+		System.out.println("faseGrupoSheets => " + faseGrupoSheets);
 		refresh();
 	}
 
@@ -142,7 +141,9 @@ public class PollaFacil {
 				+ "\n*******************************************\n");
 		ModelAndView mav = new ModelAndView("participante");
 		Participante p = getParticipante(id);
-		mav.getModel().put("domain", "pollafacil");
+		mav.getModel().put("domain", domain);
+		mav.getModel().put("today", new Date());
+		mav.getModel().put("faseActual", faseActual);
 		mav.getModel().put("equipos", equipos);
 		if (p != null) {
 			mav.getModel().put("participante", p);
@@ -164,8 +165,9 @@ public class PollaFacil {
 	@RequestMapping(path = "/index")
 	public ModelAndView index() {
 		ModelAndView mav = new ModelAndView("portada");
-		mav.getModel().put("domain", "pollafacil");
+		mav.getModel().put("domain", domain);
 		mav.getModel().put("today", new Date());
+		mav.getModel().put("faseActual", faseActual);
 		mav.getModel().put("participantes", participantes);
 		mav.getModel().put("equipos", equipos);
 		mav.getModel().put("resultados", resultados);
@@ -514,15 +516,15 @@ public class PollaFacil {
 	}
 
 	private void loadPlanillas() throws Exception {
-		if (readPathFaseGrupo != null) {
-			File folder = new File(readPathFaseGrupo);
+		if (faseGrupoReadPath != null) {
+			File folder = new File(faseGrupoReadPath);
 			if(folder.exists()) {
 				logger.info("folder.listFiles().length: " + folder.listFiles().length);
 				for (final File fileEntry : folder.listFiles()) {
 					if (!(fileEntry.isDirectory()) && checkExtension(fileEntry)) {
 						try {
 							String name = fileEntry.getName();
-							name = name.replaceAll("\\Q" + prefixFaseGrupo + "\\E", "");
+							name = name.replaceAll("\\Q" + faseGrupoPrefix + "\\E", "");
 							for (String ext : xlsxExtension) {
 								name = name.replaceAll("\\Q" + "." + ext + "\\E", "");
 							}
@@ -571,8 +573,8 @@ public class PollaFacil {
 		ArrayList<Partido> resultado = new ArrayList<>();
 		FileInputStream excelFile = new FileInputStream(fileEntry);
 		Workbook workbook = new XSSFWorkbook(excelFile);
-		for (String grupoName : gruposPrimerFase) {
-			ArrayList<Partido> partidosPorGrupo = getPartidosDesdeHoja(workbook, grupoName, Fase.PRIMERA);
+		for (String grupoName : faseGrupoSheets) {
+			ArrayList<Partido> partidosPorGrupo = getPartidosFromSheet(workbook, grupoName, Fase.PRIMERA);
 			resultado.addAll(partidosPorGrupo);
 			Grupo grupo = new Grupo();
 			grupo.setNombre(grupoName);
@@ -582,7 +584,7 @@ public class PollaFacil {
 		return resultado;
 	}
 
-	private ArrayList<Partido> getPartidosDesdeHoja(Workbook workbook, String grupoName, Fase fase) {
+	private ArrayList<Partido> getPartidosFromSheet(Workbook workbook, String grupoName, Fase fase) {
 		ArrayList<Partido> resultado = new ArrayList<>();
 		Sheet hoja = workbook.getSheet(grupoName);
 		resultado.add(getPartidoFromRow(17, hoja, fase, grupoName));
