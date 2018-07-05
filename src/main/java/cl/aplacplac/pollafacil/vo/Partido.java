@@ -20,7 +20,7 @@ public class Partido {
 
 	public Partido() {
 	}
-	
+
 	public Partido(boolean esApuesta) {
 		this.setEsApuesta(esApuesta);
 	}
@@ -40,7 +40,7 @@ public class Partido {
 		}
 		return 0;
 	}
-	
+
 	private boolean isSameDay(Date fecha1, Date fecha2) {
 		Calendar fechaS = Calendar.getInstance();
 		fechaS.setTime(fecha1);
@@ -48,7 +48,7 @@ public class Partido {
 		fechaT.setTime(fecha2);
 		return isSameDay(fechaS, fechaT);
 	}
-	
+
 	private boolean isSameDay(Calendar fechaS, Calendar fechaT) {
 		return (fechaS.get(Calendar.YEAR) == fechaT.get(Calendar.YEAR)
 				&& fechaS.get(Calendar.DAY_OF_YEAR) == fechaT.get(Calendar.DAY_OF_YEAR));
@@ -201,19 +201,32 @@ public class Partido {
 		this.penalesVisita = penalesVisita;
 	}
 
-	public String getStringGolesLocales()
-	{
-		if(!isEsApuesta() && getEstado() != 2) {
+	public String getStringGolesLocales() {
+		if (!isEsApuesta() && getEstado() != 2) {
 			return "";
 		}
-		return getGolesLocales() == null ? "" : getGolesLocales().toString();			
+		return getGolesLocales() == null ? "" : getGolesLocales().toString();
 	}
 
 	public String getStringGolesVisita() {
-		if(!isEsApuesta() && getEstado() != 2) {
+		if (!isEsApuesta() && getEstado() != 2) {
 			return "";
 		}
 		return getGolesVisita() == null ? "" : getGolesVisita().toString();
+	}
+
+	public String getStringPenalesLocales() {
+		if (!isEsApuesta() && getEstado() != 2) {
+			return "";
+		}
+		return getPenalesLocal() == null ? "" : getPenalesLocal().toString();
+	}
+
+	public String getStringPenalesVisita() {
+		if (!isEsApuesta() && getEstado() != 2) {
+			return "";
+		}
+		return getPenalesVisita() == null ? "" : getPenalesVisita().toString();
 	}
 
 	/**
@@ -224,7 +237,8 @@ public class Partido {
 	}
 
 	/**
-	 * @param grupo the grupo to set
+	 * @param grupo
+	 *            the grupo to set
 	 */
 	public void setGrupo(Grupo grupo) {
 		this.grupo = grupo;
@@ -245,12 +259,12 @@ public class Partido {
 	public void setResultadoReal(Partido resultadoReal) {
 		this.resultadoReal = resultadoReal;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
-		if(obj instanceof Partido) {
+		if (obj instanceof Partido) {
 			Partido comparable = (Partido) obj;
-			if(comparable.getLocal().equals(getLocal()) && comparable.getVisita().equals(getVisita())
+			if (comparable.getLocal().equals(getLocal()) && comparable.getVisita().equals(getVisita())
 					&& isSameDay(comparable.getFecha(), getFecha())) {
 				return true;
 			}
@@ -264,5 +278,22 @@ public class Partido {
 
 	public void setPuntos(short puntos) {
 		this.puntos = puntos;
+	}
+
+	public Equipo getGanador() {
+		if (getEstado() == 2) {
+			if (getGolesLocales() == getGolesVisita()) {
+				if (getPenalesLocal() > getPenalesVisita()) {
+					return getLocal();
+				} else {
+					return getVisita();
+				}
+			} else if (getGolesLocales() > getGolesVisita()) {
+				return getLocal();
+			} else {
+				return getVisita();
+			}
+		}
+		return null;
 	}
 }

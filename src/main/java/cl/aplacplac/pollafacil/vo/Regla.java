@@ -4,7 +4,7 @@ public class Regla {
 	private Fase fase;
 	private Short puntosResultado;
 	private Short puntosMarcador;
-	private Short equipoClasificado;
+	private Short puntosEquipoClasificado;
 
 	public Regla() {
 	}
@@ -57,16 +57,16 @@ public class Regla {
 	/**
 	 * @return the equipoClasificado
 	 */
-	public Short getEquipoClasificado() {
-		return equipoClasificado;
+	public Short getPuntosEquipoClasificado() {
+		return puntosEquipoClasificado;
 	}
 
 	/**
 	 * @param equipoClasificado
 	 *            the equipoClasificado to set
 	 */
-	public void setEquipoClasificado(Short equipoClasificado) {
-		this.equipoClasificado = equipoClasificado;
+	public void setPuntosEquipoClasificado(Short equipoClasificado) {
+		this.puntosEquipoClasificado = equipoClasificado;
 	}
 
 }

@@ -2,11 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>Rusia 2018</title>
-	<meta name="description" content="Polla Facil"></meta>
-	<meta name="keywords" content="Sistema de apuestas simple"></meta>
-	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/4.1.1/css/bootstrap.min.css" />
-	<link rel="stylesheet" type="text/css" th:href="@{/css/general.css}" />
+<title>Rusia 2018</title>
+<meta name="description" content="Polla Facil"></meta>
+<meta name="keywords" content="Sistema de apuestas simple"></meta>
+<link rel="stylesheet" type="text/css"
+	href="/webjars/bootstrap/4.1.1/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" th:href="@{/css/general.css}" />
 </head>
 <body>
 	<div class="container-fluid" style="margin: 10px">
@@ -14,14 +15,13 @@
 			<nav class="navbar navbar-dark navbar-expand-sm bg-dark">
 				<div class="container-fluid">
 					<div class="navbar-header">
-						<a class="navbar-brand" th:href="@{'/' + ${domain} + '/index'}"><img th:src='@{/img/rusia2018.mundial.jpg}' alt="Polla Facil"></img></a>
+						<a class="navbar-brand" th:href="@{'/' + ${domain} + '/index'}"><img
+							th:src='@{/img/rusia2018.mundial.jpg}' alt="Polla Facil"></img></a>
 					</div>
 					<ul class="nav navbar-nav">
-						<li class="nav-item"><a class="nav-link"
-							href="#participantes">Participantes</a></li>
+						<li class="nav-item"><a class="nav-link" href="#participantes">Participantes</a></li>
 						<li class="nav-item"><a class="nav-link" href="#partidos">Partidos</a></li>
-						<li class="nav-item"><a class="nav-link" href="#fases">Clasificados
-								por Fase</a></li>
+						<li class="nav-item"><a class="nav-link" href="#fases">Clasificados por Fase</a></li>
 					</ul>
 				</div>
 			</nav>
@@ -71,54 +71,150 @@
 
 		<div id="partidos">
 			<h1>Partidos</h1>
-			<h2>Primera Fase</h2>
-			<table class="table table-bordered table-dark" border="1">
-				<thead>
-					<tr>
-						<th align="center" style="width: 4%">Fase</th>
-						<th align="center" style="width: 6%">Estado</th>
-						<th align="center" style="width: 25%">Equipo Local</th>
-						<th align="center" style="width: 10%">Goles Local</th>
-						<th align="center" style="width: 10%">Goles Visita</th>
-						<th align="center" style="width: 25%">Equipo Visita</th>
-						<th align="center" style="width: 10%">Fecha</th>
-					</tr>
-				</thead>
-				<tbody>
-					<th:block th:each="resultado : ${resultados}">
-						<tr>
-							<td th:text="${resultado.getFase()}">...</td>
-							<td th:text="${resultado.getStringEstado()}">...</td>
-							<td align="right" th:text="${resultado.getLocal().getNombre()}">...</td>
-							<td align="right" th:text="${resultado.getStringGolesLocales()}">...</td>
-							<td align="left" th:text="${resultado.getStringGolesVisita()}">...</td>
-							<td align="left" th:text="${resultado.getVisita().getNombre()}">...</td>
-							<td th:if="${resultado.getFecha() != null}"
-								th:text="${#dates.format(resultado.getFecha(), 'dd-MM-yyyy HH:mm')}">...</td>
-							<td th:if="${resultado.getFecha() == null}" th:text="--">...</td>
-						</tr>
-					</th:block>
-				</tbody>
-			</table>
+
+			<div id="accordion">
+				<div class="card bg-dark text-white">
+					<div class="card-header" id="headingOne">
+						<h5 class="mb-0">
+							<button class="btn btn-light collapsed" data-toggle="collapse"
+								data-target="#collapseOne" aria-expanded="true"
+								aria-controls="collapseOne">Primera Fase</button>
+							<button class="btn btn-light collapsed" data-toggle="collapse"
+								data-target="#collapseTwo" aria-expanded="false"
+								aria-controls="collapseTwo">Octavos de Final</button>
+						</h5>
+					</div>
+					<div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+						data-parent="#accordion">
+						<div class="card-body">
+							<table class="table table-bordered table-dark" border="1">
+								<thead>
+									<tr>
+										<!-- 										<th align="center" style="width: 4%">Fase</th> -->
+										<th align="center" style="width: 10%">Estado</th>
+										<th align="center" style="width: 25%">Equipo Local</th>
+										<th align="center" style="width: 10%">Goles Local</th>
+										<th align="center" style="width: 10%">Goles Visita</th>
+										<th align="center" style="width: 25%">Equipo Visita</th>
+										<th align="center" style="width: 10%">Fecha</th>
+									</tr>
+								</thead>
+								<tbody>
+									<th:block
+										th:each="resultado : ${Util.filtrarPartidos(resultados, 'PRIMERA')}">
+										<tr>
+											<!-- 											<td th:text="${resultado.getFase()}">...</td> -->
+											<td th:text="${resultado.getStringEstado()}">...</td>
+											<td align="right" th:text="${resultado.getLocal().getNombre()}">...</td>
+											<td align="right" th:text="${resultado.getStringGolesLocales()}">...</td>
+											<td align="left" th:text="${resultado.getStringGolesVisita()}">...</td>
+											<td align="left" th:text="${resultado.getVisita().getNombre()}">...</td>
+											<td th:if="${resultado.getFecha() != null}" th:text="${#dates.format(resultado.getFecha(), 'dd-MM-yyyy HH:mm')}">...</td>
+											<td th:if="${resultado.getFecha() == null}" th:text="--">...</td>
+										</tr>
+									</th:block>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="card bg-dark text-white">
+					<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
+						data-parent="#accordion">
+						<div class="card-body">
+							<table class="table table-bordered table-dark" border="1">
+								<thead>
+									<tr>
+										<!-- 										<th align="center" style="width: 4%">Fase</th> -->
+										<th align="center" style="width: 10%">Estado</th>
+										<th align="center" style="width: 15%">Equipo Local</th>
+										<th align="center" style="width: 10%">Goles Local</th>
+										<th align="center" style="width: 10%">Goles Visita</th>
+										<th align="center" style="width: 10%">Penales Local</th>
+										<th align="center" style="width: 10%">Penales Visita</th>
+										<th align="center" style="width: 15%">Equipo Visita</th>
+										<th align="center" style="width: 10%">Fecha</th>
+									</tr>
+								</thead>
+								<tbody>
+									<th:block th:each="resultado : ${Util.filtrarPartidos(resultados, 'OCTAVOS')}">
+										<tr>
+											<!-- 											<td th:text="${resultado.getFase()}">...</td> -->
+											<td th:text="${resultado.getStringEstado()}">...</td>
+											<td align="right" th:text="${resultado.getLocal().getNombre()}">...</td>
+											<td align="right" th:text="${resultado.getStringGolesLocales()}">...</td>
+											<td align="left" th:text="${resultado.getStringGolesVisita()}">...</td>
+											<td align="right" th:text="${resultado.getStringPenalesLocales()}">...</td>
+											<td align="left" th:text="${resultado.getStringPenalesVisita()}">...</td>
+											<td align="left" th:text="${resultado.getVisita().getNombre()}">...</td>
+											<td th:if="${resultado.getFecha() != null}" th:text="${#dates.format(resultado.getFecha(), 'dd-MM-yyyy HH:mm')}">...</td>
+											<td th:if="${resultado.getFecha() == null}" th:text="--">...</td>
+										</tr>
+									</th:block>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 
-		<div id="fases">
+		<div id="fases">		
 			<h1>Clasificados por Fase</h1>
-			<h2>Primera Fase</h2>
-			<table class="table table-bordered table-dark" border="1">
-				<thead>
-					<tr>
-						<th align="center" style="width: 100%">Equipo</th>
-					</tr>
-				</thead>
-				<tbody>
-					<th:block th:each="equipo : ${equipos}"> 
-						<tr th:if="${equipo.getFasesCompletadas().contains(fases[0])}">
-							<td th:text="${equipo.getNombre()}">...</td>
-						</tr>
-					</th:block>
-				</tbody>
-			</table>
+			<div id="accordion2">
+				<div class="card bg-dark text-white">
+					<div class="card-header" id="headingTwo">
+						<h5 class="mb-0">
+							<button class="btn btn-light collapsed" data-toggle="collapse"
+								data-target="#collapseOneClasi" aria-expanded="true"
+								aria-controls="collapseOneClasi">Primera Fase</button>
+							<button class="btn btn-light collapsed" data-toggle="collapse"
+								data-target="#collapseTwoClasi" aria-expanded="false"
+								aria-controls="collapseTwoClasi">Octavos de Final</button>
+						</h5>
+					</div>
+					<div id="collapseOneClasi" class="collapse" aria-labelledby="headingTwo"
+						data-parent="#accordion2">
+						<div class="card-body">
+							<table class="table table-bordered table-dark" border="1">
+								<thead>
+									<tr>
+										<th align="center" style="width: 100%">Equipo</th>
+									</tr>
+								</thead>
+								<tbody>
+									<th:block th:each="equipo : ${equipos}">
+										<tr th:if="${equipo.getFasesCompletadas().contains(fases[0])}">
+											<td th:text="${equipo.getNombre()}">...</td>
+										</tr>
+									</th:block>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="card bg-dark text-white">
+					<div id="collapseTwoClasi" class="collapse" aria-labelledby="headingTwo"
+						data-parent="#accordion2">
+						<div class="card-body">
+							<table class="table table-bordered table-dark" border="1">
+								<thead>
+									<tr>
+										<th align="center" style="width: 100%">Equipo</th>
+									</tr>
+								</thead>
+								<tbody>
+									<th:block th:each="equipo : ${equipos}">
+										<tr th:if="${equipo.getFasesCompletadas().contains(fases[1])}">
+											<td th:text="${equipo.getNombre()}">...</td>
+										</tr>
+									</th:block>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<script type="text/javascript" src="/webjars/jquery/2.1.1/jquery.min.js/"></script>

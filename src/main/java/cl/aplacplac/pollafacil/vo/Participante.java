@@ -16,6 +16,9 @@ public class Participante {
 		partidos = new ArrayList<>();
 		puntajes = new ArrayList<>();
 		setGrupos(new ArrayList<>());
+		puntos = 0;
+		posicion = 0;
+		lugar = 0;
 		this.id = id;
 	}
 
