@@ -1,16 +1,29 @@
 package cl.aplacplac.pollafacil.vo;
 
+/**
+ * Clase con valores a sumar por cada fase del campeonato
+ * 
+ * @author fgonzalez
+ *
+ */
 public class Regla {
+	// La fase de la regla
 	private Fase fase;
+	// Los puntos obtenidos por acertar a resultado
 	private Short puntosResultado;
+	// Los puntos obtenidos por acertar a marcador
 	private Short puntosMarcador;
+	// Los puntos obtenidos por acertar a equipo clasificado
 	private Short puntosEquipoClasificado;
 
+	/**
+	 * Constructor de clase
+	 */
 	public Regla() {
 	}
 
 	/**
-	 * @return the fase
+	 * @return La fase
 	 */
 	public Fase getFase() {
 		return fase;
@@ -18,14 +31,14 @@ public class Regla {
 
 	/**
 	 * @param fase
-	 *            the fase to set
+	 *            La nueva fase
 	 */
 	public void setFase(Fase fase) {
 		this.fase = fase;
 	}
 
 	/**
-	 * @return the puntosResultado
+	 * @return los puntosResultado
 	 */
 	public Short getPuntosResultado() {
 		return puntosResultado;
@@ -33,14 +46,14 @@ public class Regla {
 
 	/**
 	 * @param puntosResultado
-	 *            the puntosResultado to set
+	 *            los nuevos puntosResultado
 	 */
 	public void setPuntosResultado(Short puntosResultado) {
 		this.puntosResultado = puntosResultado;
 	}
 
 	/**
-	 * @return the puntosMarcador
+	 * @return los puntosMarcador
 	 */
 	public Short getPuntosMarcador() {
 		return puntosMarcador;
@@ -48,14 +61,14 @@ public class Regla {
 
 	/**
 	 * @param puntosMarcador
-	 *            the puntosMarcador to set
+	 *            los nuevos puntosMarcador
 	 */
 	public void setPuntosMarcador(Short puntosMarcador) {
 		this.puntosMarcador = puntosMarcador;
 	}
 
 	/**
-	 * @return the equipoClasificado
+	 * @return el equipoClasificado
 	 */
 	public Short getPuntosEquipoClasificado() {
 		return puntosEquipoClasificado;
@@ -63,7 +76,7 @@ public class Regla {
 
 	/**
 	 * @param equipoClasificado
-	 *            the equipoClasificado to set
+	 *            el nuevo equipoClasificado
 	 */
 	public void setPuntosEquipoClasificado(Short equipoClasificado) {
 		this.puntosEquipoClasificado = equipoClasificado;
