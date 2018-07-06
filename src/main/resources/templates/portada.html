@@ -71,20 +71,23 @@
 
 		<div id="partidos">
 			<h1>Partidos</h1>
-
 			<div id="accordion">
 				<div class="card bg-dark text-white">
 					<div class="card-header" id="headingOne">
 						<h5 class="mb-0">
 							<button class="btn btn-light collapsed" data-toggle="collapse"
-								data-target="#collapseOne" aria-expanded="true"
-								aria-controls="collapseOne">Primera Fase</button>
-							<button class="btn btn-light collapsed" data-toggle="collapse"
-								data-target="#collapseTwo" aria-expanded="false"
-								aria-controls="collapseTwo">Octavos de Final</button>
+								data-target="#collapse1" aria-expanded="true"
+								aria-controls="collapse1">Primera Fase</button>
+							<button th:if="${faseActual &gt;= 2 }" class="btn btn-light collapsed" data-toggle="collapse"
+								data-target="#collapse2" aria-expanded="false"
+								aria-controls="collapse2">Octavos de Final</button>
+							<button th:if="${faseActual &gt;= 3 }" class="btn btn-light collapsed" data-toggle="collapse"
+								data-target="#collapse3" aria-expanded="false"
+								aria-controls="collapse3">Cuartos de Final</button>
 						</h5>
 					</div>
-					<div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+					<!-- Primera Fase -->
+					<div id="collapse1" class="collapse" aria-labelledby="headingOne"
 						data-parent="#accordion">
 						<div class="card-body">
 							<table class="table table-bordered table-dark" border="1">
@@ -118,8 +121,9 @@
 						</div>
 					</div>
 				</div>
-				<div class="card bg-dark text-white">
-					<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
+				<!-- Octavos Fase -->
+				<div th:if="${faseActual &gt;= 2 }" class="card bg-dark text-white">
+					<div id="collapse2" class="collapse" aria-labelledby="headingTwo"
 						data-parent="#accordion">
 						<div class="card-body">
 							<table class="table table-bordered table-dark" border="1">
@@ -156,6 +160,45 @@
 						</div>
 					</div>
 				</div>
+				<!-- Cuartos Fase -->
+				<div th:if="${faseActual &gt;= 3 }" class="card bg-dark text-white">
+					<div id="collapse3" class="collapse" aria-labelledby="headingTwo"
+						data-parent="#accordion">
+						<div class="card-body">
+							<table class="table table-bordered table-dark" border="1">
+								<thead>
+									<tr>
+										<!-- 										<th align="center" style="width: 4%">Fase</th> -->
+										<th align="center" style="width: 10%">Estado</th>
+										<th align="center" style="width: 15%">Equipo Local</th>
+										<th align="center" style="width: 10%">Goles Local</th>
+										<th align="center" style="width: 10%">Goles Visita</th>
+										<th align="center" style="width: 10%">Penales Local</th>
+										<th align="center" style="width: 10%">Penales Visita</th>
+										<th align="center" style="width: 15%">Equipo Visita</th>
+										<th align="center" style="width: 10%">Fecha</th>
+									</tr>
+								</thead>
+								<tbody>
+									<th:block th:each="resultado : ${Util.filtrarPartidos(resultados, 'CUARTOS')}">
+										<tr>
+											<!-- 											<td th:text="${resultado.getFase()}">...</td> -->
+											<td th:text="${resultado.getStringEstado()}">...</td>
+											<td align="right" th:text="${resultado.getLocal().getNombre()}">...</td>
+											<td align="right" th:text="${resultado.getStringGolesLocales()}">...</td>
+											<td align="left" th:text="${resultado.getStringGolesVisita()}">...</td>
+											<td align="right" th:text="${resultado.getStringPenalesLocales()}">...</td>
+											<td align="left" th:text="${resultado.getStringPenalesVisita()}">...</td>
+											<td align="left" th:text="${resultado.getVisita().getNombre()}">...</td>
+											<td th:if="${resultado.getFecha() != null}" th:text="${#dates.format(resultado.getFecha(), 'dd-MM-yyyy HH:mm')}">...</td>
+											<td th:if="${resultado.getFecha() == null}" th:text="--">...</td>
+										</tr>
+									</th:block>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 
@@ -166,14 +209,18 @@
 					<div class="card-header" id="headingTwo">
 						<h5 class="mb-0">
 							<button class="btn btn-light collapsed" data-toggle="collapse"
-								data-target="#collapseOneClasi" aria-expanded="true"
-								aria-controls="collapseOneClasi">Primera Fase</button>
-							<button class="btn btn-light collapsed" data-toggle="collapse"
-								data-target="#collapseTwoClasi" aria-expanded="false"
-								aria-controls="collapseTwoClasi">Octavos de Final</button>
+								data-target="#collapse1Clasi" aria-expanded="true"
+								aria-controls="collapse1Clasi">Primera Fase</button>
+							<button th:if="${faseActual &gt;= 2 }" class="btn btn-light collapsed" data-toggle="collapse"
+								data-target="#collapse2Clasi" aria-expanded="false"
+								aria-controls="collapse2Clasi">Octavos de Final</button>
+							<button th:if="${faseActual &gt;= 3 }" class="btn btn-light collapsed" data-toggle="collapse"
+								data-target="#collapse3Clasi" aria-expanded="false"
+								aria-controls="collapse3Clasi">Cuartos de Final</button>
 						</h5>
 					</div>
-					<div id="collapseOneClasi" class="collapse" aria-labelledby="headingTwo"
+					<!-- Primera Fase -->
+					<div id="collapse1Clasi" class="collapse" aria-labelledby="headingTwo"
 						data-parent="#accordion2">
 						<div class="card-body">
 							<table class="table table-bordered table-dark" border="1">
@@ -193,8 +240,9 @@
 						</div>
 					</div>
 				</div>
-				<div class="card bg-dark text-white">
-					<div id="collapseTwoClasi" class="collapse" aria-labelledby="headingTwo"
+				<!-- Octavos Fase -->
+				<div th:if="${faseActual &gt;= 2 }" class="card bg-dark text-white">
+					<div id="collapse2Clasi" class="collapse" aria-labelledby="headingTwo"
 						data-parent="#accordion2">
 						<div class="card-body">
 							<table class="table table-bordered table-dark" border="1">
@@ -206,6 +254,28 @@
 								<tbody>
 									<th:block th:each="equipo : ${equipos}">
 										<tr th:if="${equipo.getFasesCompletadas().contains(fases[1])}">
+											<td th:text="${equipo.getNombre()}">...</td>
+										</tr>
+									</th:block>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<!-- Cuartos Fase -->
+				<div th:if="${faseActual &gt;= 3 }" class="card bg-dark text-white">
+					<div id="collapse3Clasi" class="collapse" aria-labelledby="headingTwo"
+						data-parent="#accordion2">
+						<div class="card-body">
+							<table class="table table-bordered table-dark" border="1">
+								<thead>
+									<tr>
+										<th align="center" style="width: 100%">Equipo</th>
+									</tr>
+								</thead>
+								<tbody>
+									<th:block th:each="equipo : ${equipos}">
+										<tr th:if="${equipo.getFasesCompletadas().contains(fases[2])}">
 											<td th:text="${equipo.getNombre()}">...</td>
 										</tr>
 									</th:block>

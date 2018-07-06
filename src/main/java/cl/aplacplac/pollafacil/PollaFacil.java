@@ -83,6 +83,8 @@ public class PollaFacil {
 	private String primeraFaseSheet;
 	@Value("${pollaFacil.resultados.octavosFaseSheet}")
 	private String octavosFaseSheet;
+	@Value("${pollaFacil.resultados.cuartosFaseSheet}")
+	private String cuartosFaseSheet;
 
 	// Fase Grupo
 	@Value("${pollaFacil.faseGrupo.readPath}")
@@ -98,7 +100,15 @@ public class PollaFacil {
 	private String octavosPrefix;
 	@Value("${pollaFacil.octavos.sheet}")
 	private String octavosSheet;
-
+	
+	// Cuartos
+	@Value("${pollaFacil.cuartos.readPath}")
+	private String cuartosReadPath;
+	@Value("${pollaFacil.cuartos.prefix}")
+	private String cuartosPrefix;
+	@Value("${pollaFacil.cuartos.sheet}")
+	private String cuartosSheet;
+	
 	private ArrayList<Participante> participantes;
 	private ArrayList<Partido> resultados;
 	private ArrayList<Equipo> equipos;
@@ -114,20 +124,21 @@ public class PollaFacil {
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(PollaFacil.class, args);
-		logger.info("\n*******************************************" + "\nPolla Facil Lista"
+		logger.info("\n*******************************************" 
+				+ "\nPolla Facil Lista"
 				+ "\n*******************************************\n");
 	}
 
 	@PostConstruct
 	public void construct() throws Exception {
 		faseGrupoSheets = env.getProperty("pollaFacil.faseGrupo.sheets").split("-");
-		System.out.println("faseGrupoSheets => " + faseGrupoSheets);
 		refresh();
 	}
 
 	@RequestMapping(path = "/refresh", method = { RequestMethod.GET })
 	public ModelAndView refresh() throws Exception {
-		logger.info("\n*******************************************" + "\nLlamado a Refresh!"
+		logger.info("\n*******************************************" 
+				+ "\nLlamado a Refresh!"
 				+ "\n*******************************************\n");
 		i = 0;
 		participantes = new ArrayList<>();
@@ -207,6 +218,7 @@ public class PollaFacil {
 					case 5:
 					case 4:
 					case 3:
+						resultados.addAll(getResultados(Fase.CUARTOS, loadFile));
 					case 2:
 						resultados.addAll(getResultados(Fase.OCTAVOS, loadFile));
 					case 1:
@@ -215,13 +227,15 @@ public class PollaFacil {
 				} catch (Exception e) {
 					e.printStackTrace();
 					logger.error(
-							"\n*******************************************" + "Error cargando " + loadFile.getName()
-									+ ": " + e.getMessage() + "\n*******************************************\n");
+							"\n*******************************************" 
+							+ "Error cargando " + loadFile.getName() + ": " + e.getMessage() 
+							+ "\n*******************************************\n");
 					throw e;
 				}
 			} else {
-				logger.error("\n*******************************************\n" + "\nNo se logro cargar resultados: "
-						+ loadFile.getName() + "\n*******************************************\n");
+				logger.error("\n*******************************************\n" 
+						+ "\nNo se logro cargar resultados: " + loadFile.getName() 
+						+ "\n*******************************************\n");
 			}
 		} else {
 			throw new Exception("No se encontro el archivo de resultados: " + resultFile);
@@ -235,7 +249,7 @@ public class PollaFacil {
 	private ArrayList<Partido> getPartidos(Fase fase, Workbook workbook) throws Exception {
 		switch (fase) {
 		case CUARTOS:
-			break;
+			return getPartidosOtrasFases(fase, workbook, cuartosFaseSheet);
 		case FINAL:
 			break;
 		case OCTAVOS:
@@ -258,6 +272,7 @@ public class PollaFacil {
 		ArrayList<Partido> result = new ArrayList<>();
 		switch (fase) {
 		case CUARTOS:
+			result.addAll(getPartidosFromSheet(workbook, cuartosSheet, fase));
 			break;
 		case FINAL:
 			break;
@@ -308,13 +323,15 @@ public class PollaFacil {
 				} catch (Exception e) {
 					e.printStackTrace();
 					logger.error(
-							"\n*******************************************" + "Error cargando " + loadFile.getName()
-									+ ": " + e.getMessage() + "\n*******************************************\n");
+							"\n*******************************************" 
+							+ "Error cargando " + loadFile.getName() + ": " + e.getMessage() 
+							+ "\n*******************************************\n");
 					throw e;
 				}
 			} else {
-				logger.error("\n*******************************************\n" + "\nNo se logro cargar resultados: "
-						+ loadFile.getName() + "\n*******************************************\n");
+				logger.error("\n*******************************************\n" 
+						+ "\nNo se logro cargar resultados: " + loadFile.getName() 
+						+ "\n*******************************************\n");
 			}
 		} else {
 			throw new Exception("No se encontro el archivo de resultados: " + resultFile);
@@ -393,32 +410,10 @@ public class PollaFacil {
 	private void setPuntosFromPartido(Participante participante, Fase fase, Partido partido, Regla regla) {
 		Partido resultadoReal = getPartidoFromResults(partido);
 		Puntaje puntaje = getPuntaje(participante, fase);
-		int result = 0;
-		if (resultadoReal.getEstado() == 2 && resultadoReal.getGolesLocales() != null
-				&& resultadoReal.getGolesVisita() != null) {
-			if (resultadoReal.getGolesLocales() == partido.getGolesLocales()
-					&& resultadoReal.getGolesVisita() == partido.getGolesVisita()) {
-				puntaje.setPuntosMarcador((short) (puntaje.getPuntosMarcador() + regla.getPuntosMarcador()));
-				result += regla.getPuntosMarcador();
-			}
-			if (resultadoReal.getGolesLocales() > resultadoReal.getGolesVisita()
-					&& partido.getGolesLocales() > partido.getGolesVisita()) {
-				result += regla.getPuntosResultado();
-				puntaje.setPuntosResultado((short) (puntaje.getPuntosResultado() + regla.getPuntosResultado()));
-			}
-			if (resultadoReal.getGolesLocales() < resultadoReal.getGolesVisita()
-					&& partido.getGolesLocales() < partido.getGolesVisita()) {
-				result += regla.getPuntosResultado();
-				puntaje.setPuntosResultado((short) (puntaje.getPuntosResultado() + regla.getPuntosResultado()));
-			}
-			if (resultadoReal.getGolesLocales() == resultadoReal.getGolesVisita()
-					&& partido.getGolesLocales() == partido.getGolesVisita()) {
-				result += regla.getPuntosResultado();
-				puntaje.setPuntosResultado((short) (puntaje.getPuntosResultado() + regla.getPuntosResultado()));
-			}
-		}
-		partido.setPuntos((short) result);
-		participante.addPuntos((short) result);
+		if (resultadoReal.getEstado() == 2 && resultadoReal.getGolesLocales() != null && resultadoReal.getGolesVisita() != null) {
+			partido.calculatePuntos(resultadoReal, puntaje, regla);
+		}		
+		participante.addPuntos(partido.getPuntos());
 	}
 
 	private Puntaje getPuntaje(Participante participante, Fase fase) {
@@ -523,13 +518,15 @@ public class PollaFacil {
 				} catch (Exception e) {
 					e.printStackTrace();
 					logger.error(
-							"\n*******************************************" + "Error cargando " + loadFile.getName()
-									+ ": " + e.getMessage() + "\n*******************************************\n");
+							"\n*******************************************" 
+							+ "Error cargando " + loadFile.getName() + ": " + e.getMessage() 
+							+ "\n*******************************************\n");
 					throw e;
 				}
 			} else {
-				logger.error("\n*******************************************\n" + "\nNo se logro cargar resultados: "
-						+ loadFile.getName() + "\n*******************************************\n");
+				logger.error("\n*******************************************\n" 
+						+ "\nNo se logro cargar resultados: " + loadFile.getName() 
+						+ "\n*******************************************\n");
 			}
 		} else {
 			throw new Exception("No se encontro el archivo de resultados: " + resultFile);
@@ -617,21 +614,23 @@ public class PollaFacil {
 							getParticipante(name.trim(), fileEntry, fase);
 						} catch (Exception e) {
 							e.printStackTrace();
-							logger.error("\n*******************************************" + "Error cargando "
-									+ fileEntry.getName() + ": " + e.getMessage()
+							logger.error("\n*******************************************" 
+									+ "Error cargando " + fileEntry.getName() + ": " + e.getMessage()
 									+ "\n*******************************************\n");
 							throw e;
 						}
 					} else {
 						logger.error(
-								"\n*******************************************\n" + "\nNo se logro cargar planilla: "
-										+ fileEntry.getName() + "\n*******************************************\n");
+								"\n*******************************************\n" 
+								+ "\nNo se logro cargar planilla: " + fileEntry.getName() 
+								+ "\n*******************************************\n");
 					}
 				}
 			}
 		} else {
 			Exception e = new Exception("readPath no puede ser Nulo!");
-			logger.error("\n*******************************************" + "\n" + e.getMessage()
+			logger.error("\n*******************************************" 
+					+ "\n" + e.getMessage()
 					+ "\n*******************************************\n");
 			throw e;
 		}
@@ -640,7 +639,7 @@ public class PollaFacil {
 	private String getPrefix(Fase fase) {
 		switch (fase) {
 		case CUARTOS:
-			break;
+			return cuartosPrefix;
 		case FINAL:
 			break;
 		case OCTAVOS:
@@ -658,7 +657,7 @@ public class PollaFacil {
 	private String getReadPath(Fase fase) {
 		switch (fase) {
 		case CUARTOS:
-			break;
+			return cuartosReadPath;
 		case FINAL:
 			break;
 		case OCTAVOS:
@@ -706,6 +705,8 @@ public class PollaFacil {
 		Workbook workbook = new XSSFWorkbook(excelFile);
 		switch (fase) {
 		case CUARTOS:
+			ArrayList<Partido> partidosC = getPartidosFromSheet(workbook, cuartosSheet, fase);
+			resultado.addAll(partidosC);
 			break;
 		case FINAL:
 			break;
@@ -735,6 +736,11 @@ public class PollaFacil {
 		ArrayList<Partido> resultado = new ArrayList<>();
 		switch (fase) {
 		case CUARTOS:
+			Sheet hojaC = workbook.getSheet(sheet);
+			resultado.add(getPartidoFromRows(hojaC, fase, 4));
+			resultado.add(getPartidoFromRows(hojaC, fase, 10));
+			resultado.add(getPartidoFromRows(hojaC, fase, 16));
+			resultado.add(getPartidoFromRows(hojaC, fase, 22));
 			break;
 		case FINAL:
 			break;

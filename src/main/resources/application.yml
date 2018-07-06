@@ -2,23 +2,29 @@
 pollaFacil:
   domain: pollafacil
 # 1: Fase de grupos, 2: Octavos, 3: cuartos, 4: semifinal, 5: tercer lugar, 6: final 
-  faseActual: 2
+  faseActual: 3
   resultados:
     resultFile: /opt/pollafacil/resultFile.xlsx
     reglasSheet: 'REGLAS'
     primeraFaseSheet: 'PRIMERA FASE'
     octavosFaseSheet: 'OCTAVOS'
+    cuartosFaseSheet: 'CUARTOS'
     
 # Fase de grupo
   faseGrupo:
-    readPath: /opt/pollafacil/planillas/fase_grupo
+    readPath: '/opt/pollafacil/planillas/fase_grupo'
     prefix: 'Pronosticos Primera Fase '
     sheets: 'GRUPO A-GRUPO B-GRUPO C-GRUPO D-GRUPO E-GRUPO F-GRUPO G-GRUPO H'
 # Octavos
   octavos:
-    readPath: /opt/pollafacil/planillas/octavos
+    readPath: '/opt/pollafacil/planillas/octavos'
     prefix: 'Pronosticos_Octavos _Rusia_2018_'
     sheet: 'Octavos'
+# Cuartos
+  cuartos:
+    readPath: '/opt/pollafacil/planillas/cuartos'
+    prefix: 'Pronosticos_Cuartos_Rusia_2018_'
+    sheet: 'Cuartos'
 
 # Identificacion del servicio 
 spring:

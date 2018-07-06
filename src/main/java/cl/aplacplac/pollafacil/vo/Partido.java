@@ -296,4 +296,50 @@ public class Partido {
 		}
 		return null;
 	}
+
+	public void calculatePuntos(Partido resultadoReal, Puntaje puntaje, Regla regla) {
+		setResultadoReal(resultadoReal);
+		int result = 0;
+		// Pronostico igual a resultado (puntos marcador)  
+		if (getResultadoReal().getGolesLocales() == getGolesLocales() && getResultadoReal().getGolesVisita() == getGolesVisita()) {
+			puntaje.setPuntosMarcador((short) (puntaje.getPuntosMarcador() + regla.getPuntosMarcador()));
+			result += regla.getPuntosMarcador();
+		}
+		
+		// Acierto de clasificado que no es Primera Fase 
+		if(getFase() != Fase.PRIMERA) {
+			// Acierto de Resultado Local gana Visita (puntos resultado)
+			if (getResultadoReal().getGolesLocales() > getResultadoReal().getGolesVisita() && getGolesLocales() > getGolesVisita()) {
+				result += regla.getPuntosResultado();
+				puntaje.setPuntosResultado((short) (puntaje.getPuntosResultado() + regla.getPuntosResultado()));
+			}
+			// Acierto de Resultado Visita gana Local (puntos resultado)
+			else if (getResultadoReal().getGolesLocales() < getResultadoReal().getGolesVisita() && getGolesLocales() < getGolesVisita()) {
+				result += regla.getPuntosResultado();
+				puntaje.setPuntosResultado((short) (puntaje.getPuntosResultado() + regla.getPuntosResultado()));
+			}
+			// Puntos resultado empate + penales
+			else  if (getGolesLocales() == getGolesVisita() && getGanador() == getResultadoReal().getGanador()) { 
+				result += regla.getPuntosResultado();
+				puntaje.setPuntosResultado((short) (puntaje.getPuntosResultado() + regla.getPuntosResultado()));
+			}
+		} else {
+			// Acierto de Resultado Local gana Visita (puntos resultado)
+			if (getResultadoReal().getGolesLocales() > getResultadoReal().getGolesVisita() && getGolesLocales() > getGolesVisita()) {
+				result += regla.getPuntosResultado();
+				puntaje.setPuntosResultado((short) (puntaje.getPuntosResultado() + regla.getPuntosResultado()));
+			}
+			// Acierto de Resultado Visita gana Local (puntos resultado)
+			else if (getResultadoReal().getGolesLocales() < getResultadoReal().getGolesVisita() && getGolesLocales() < getGolesVisita()) {
+				result += regla.getPuntosResultado();
+				puntaje.setPuntosResultado((short) (puntaje.getPuntosResultado() + regla.getPuntosResultado()));
+			}
+			// Acierto de Resultado empate (puntos resultado)
+			else if (getResultadoReal().getGolesLocales() == getResultadoReal().getGolesVisita() && getGolesLocales() == getGolesVisita()) {
+				result += regla.getPuntosResultado();
+				puntaje.setPuntosResultado((short) (puntaje.getPuntosResultado() + regla.getPuntosResultado()));
+			}	
+		}
+		setPuntos((short) result);
+	}
 }

@@ -27,8 +27,7 @@
 		</th:block>
 
 		<h1 th:text="${participante.getNombre()}">...</h1>
-		<h3
-			th:text="${'Puntaje:' + participante.getPuntos() + ' Lugar:' + participante.getLugar()}">...</h3>
+		<h3 th:text="${'Puntaje:' + participante.getPuntos() + ' Lugar:' + participante.getLugar()}">...</h3>
 
 		<div id="puntajes">
 			<h2>Puntajes</h2>
@@ -57,21 +56,23 @@
 		</div>
 
 		<div id="apuestas">
-
 			<div id="accordion">
 				<div class="card bg-dark text-white">
 					<div class="card-header" id="headingOne">
 						<h5 class="mb-0">
 							<button class="btn btn-light collapsed" data-toggle="collapse"
-								data-target="#collapseOne" aria-expanded="true"
-								aria-controls="collapseOne">Primera Fase</button>
-							<button class="btn btn-light collapsed" data-toggle="collapse"
-								data-target="#collapseTwo" aria-expanded="false"
-								aria-controls="collapseTwo">Octavos de Final</button>
+								data-target="#collapse1" aria-expanded="true"
+								aria-controls="collapse1">Primera Fase</button>
+							<button th:if="${faseActual &gt;= 2 }" class="btn btn-light collapsed" data-toggle="collapse"
+								data-target="#collapse2" aria-expanded="false"
+								aria-controls="collapse2">Octavos de Final</button>
+							<button th:if="${faseActual &gt;= 3 }" class="btn btn-light collapsed" data-toggle="collapse"
+								data-target="#collapse3" aria-expanded="false"
+								aria-controls="collapse3">Cuartos de Final</button>
 						</h5>
 					</div>
-					<div id="collapseOne" class="collapse" aria-labelledby="headingOne"
-						data-parent="#accordion">
+					<!-- Primera Fase -->
+					<div id="collapse1" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
 						<div class="card-body">
 							<table class="table table-bordered table-dark" border="1">
 								<thead>
@@ -135,9 +136,9 @@
 						</div>
 					</div>
 				</div>
-				<div class="card bg-dark text-white">
-					<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
-						data-parent="#accordion">
+				<!-- Octavos Fase -->
+				<div th:if="${faseActual &gt;= 2 }" class="card bg-dark text-white">
+					<div id="collapse2" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
 						<div class="card-body">
 							<table class="table table-bordered table-dark" border="1">
 								<thead>
@@ -192,6 +193,85 @@
 											<td style="color: #000000;" th:text="${resultado.getPuntos()}">...</td>
 										</tr>
 										<tr th:if="${resultado.getPuntos() &gt; OCTAVOSPuntosResultado}" bgcolor="#FFD700">
+											<td style="color: #000000;" th:text="${resultado.getStringEstado()}">...</td>
+											<td style="color: #000000;" align="right" th:text="${resultado.getLocal().getNombre()}">...</td>
+											<td style="color: #000000;" align="left" th:text="${resultado.getVisita().getNombre()}">...</td>
+											<td style="color: #000000;" align="right" th:text="${resultado.getStringGolesLocales()}">...</td>
+											<td style="color: #000000;" align="left" th:text="${resultado.getStringGolesVisita()}">...</td>
+											<td style="color: #000000;" align="right" th:text="${resultado.getStringPenalesLocales()}">...</td>
+											<td style="color: #000000;" align="left" th:text="${resultado.getStringPenalesVisita()}">...</td>
+											<td style="color: #000000;" align="right" th:text="${resultado.getResultadoReal().getStringGolesLocales()}">...</td>
+											<td style="color: #000000;" align="left" th:text="${resultado.getResultadoReal().getStringGolesVisita()}">...</td>
+											<td style="color: #000000;" align="right" th:text="${resultado.getResultadoReal().getStringPenalesLocales()}">...</td>
+											<td style="color: #000000;" align="left" th:text="${resultado.getResultadoReal().getStringPenalesVisita()}">...</td>
+											<td style="color: #000000;" th:if="${resultado.getFecha() != null}" th:text="${#dates.format(resultado.getFecha(), 'dd-MM-yyyy HH:mm')}">...</td>
+											<td style="color: #000000;" th:if="${resultado.getFecha() == null}" th:text="--">...</td>
+											<td style="color: #000000;" th:text="${resultado.getPuntos()}">...</td>
+										</tr>
+									</th:block>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<!-- Cuartos Fase -->
+				<div th:if="${faseActual &gt;= 3}" class="card bg-dark text-white">
+					<div id="collapse3" class="collapse" aria-labelledby="headingTwo"
+						data-parent="#accordion">
+						<div class="card-body">
+							<table class="table table-bordered table-dark" border="1">
+								<thead>
+									<tr>
+										<th align="center" style="width: 10%">Estado</th>
+										<th align="center" style="width: 10%">Equipo Local</th>
+										<th align="center" style="width: 10%">Equipo Visita</th>
+										<th align="center" style="width: 5%">Goles Local(Apuesta)</th>
+										<th align="center" style="width: 5%">Goles Visita (Apuesta)</th>
+										<th align="center" style="width: 5%">Penales Local(Apuesta)</th>
+										<th align="center" style="width: 5%">Penales Visita (Apuesta)</th>
+										<th align="center" style="width: 5%">Goles Local (Real)</th>
+										<th align="center" style="width: 5%">Goles Visita (Real)</th>
+										<th align="center" style="width: 5%">Penales Local(Real)</th>
+										<th align="center" style="width: 5%">Penales Visita (Real)</th>
+										<th align="center" style="width: 20%">Fecha</th>
+										<th align="center" style="width: 10%">Puntos</th>
+									</tr>
+								</thead>
+								<tbody>
+									<th:block th:each="resultado : ${Util.filtrarPartidos(partidos, 'CUARTOS')}">
+										<tr th:if="${resultado.getPuntos() == 0 || resultado.getPuntos() == null}" bgcolor="">
+											<td th:text="${resultado.getStringEstado()}">...</td>
+											<td align="right" th:text="${resultado.getLocal().getNombre()}">...</td>
+											<td align="left" th:text="${resultado.getVisita().getNombre()}">...</td>
+											<td align="right" th:text="${resultado.getStringGolesLocales()}">...</td>
+											<td align="left" th:text="${resultado.getStringGolesVisita()}">...</td>
+											<td align="right" th:text="${resultado.getStringPenalesLocales()}">...</td>
+											<td align="left" th:text="${resultado.getStringPenalesVisita()}">...</td>
+											<td align="right" th:text="${resultado.getResultadoReal().getStringGolesLocales()}">...</td>
+											<td align="left" th:text="${resultado.getResultadoReal().getStringGolesVisita()}">...</td>
+											<td align="right" th:text="${resultado.getResultadoReal().getStringPenalesLocales()}">...</td>
+											<td align="left" th:text="${resultado.getResultadoReal().getStringPenalesVisita()}">...</td>
+											<td th:if="${resultado.getFecha() != null}" th:text="${#dates.format(resultado.getFecha(), 'dd-MM-yyyy HH:mm')}">...</td>
+											<td th:if="${resultado.getFecha() == null}" th:text="--">...</td>
+											<td th:text="${resultado.getPuntos()}">...</td>
+										</tr>
+										<tr th:if="${resultado.getPuntos() == CUARTOSPuntosResultado}" bgcolor="#C0C0C0">
+											<td style="color: #000000;" th:text="${resultado.getStringEstado()}">...</td>
+											<td style="color: #000000;" align="right" th:text="${resultado.getLocal().getNombre()}">...</td>
+											<td style="color: #000000;" align="left" th:text="${resultado.getVisita().getNombre()}">...</td>
+											<td style="color: #000000;" align="right" th:text="${resultado.getStringGolesLocales()}">...</td>
+											<td style="color: #000000;" align="left" th:text="${resultado.getStringGolesVisita()}">...</td>
+											<td style="color: #000000;" align="right" th:text="${resultado.getStringPenalesLocales()}">...</td>
+											<td style="color: #000000;" align="left" th:text="${resultado.getStringPenalesVisita()}">...</td>
+											<td style="color: #000000;" align="right" th:text="${resultado.getResultadoReal().getStringGolesLocales()}">...</td>
+											<td style="color: #000000;" align="left" th:text="${resultado.getResultadoReal().getStringGolesVisita()}">...</td>
+											<td style="color: #000000;" align="right" th:text="${resultado.getResultadoReal().getStringPenalesLocales()}">...</td>
+											<td style="color: #000000;" align="left" th:text="${resultado.getResultadoReal().getStringPenalesVisita()}">...</td>
+											<td style="color: #000000;" th:if="${resultado.getFecha() != null}" th:text="${#dates.format(resultado.getFecha(), 'dd-MM-yyyy HH:mm')}">...</td>
+											<td style="color: #000000;" th:if="${resultado.getFecha() == null}" th:text="--">...</td>
+											<td style="color: #000000;" th:text="${resultado.getPuntos()}">...</td>
+										</tr>
+										<tr th:if="${resultado.getPuntos() &gt; CUARTOSPuntosResultado}" bgcolor="#FFD700">
 											<td style="color: #000000;" th:text="${resultado.getStringEstado()}">...</td>
 											<td style="color: #000000;" align="right" th:text="${resultado.getLocal().getNombre()}">...</td>
 											<td style="color: #000000;" align="left" th:text="${resultado.getVisita().getNombre()}">...</td>
