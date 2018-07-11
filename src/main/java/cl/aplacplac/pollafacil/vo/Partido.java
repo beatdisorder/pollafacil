@@ -429,7 +429,7 @@ public class Partido {
 				puntaje.setPuntosResultado((short) (puntaje.getPuntosResultado() + regla.getPuntosResultado()));
 			}
 			// Puntos resultado empate + penales
-			else if (getGolesLocales() == getGolesVisita() && getGanador() == getResultadoReal().getGanador()) {
+			else if (getGolesLocales() == getGolesVisita() && getResultadoReal().getGolesLocales() == getResultadoReal().getGolesVisita()) {
 				result += regla.getPuntosResultado();
 				puntaje.setPuntosResultado((short) (puntaje.getPuntosResultado() + regla.getPuntosResultado()));
 			}
