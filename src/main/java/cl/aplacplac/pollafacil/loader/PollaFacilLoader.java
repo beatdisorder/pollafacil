@@ -19,6 +19,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import cl.aplacplac.pollafacil.PollaFacil;
 import cl.aplacplac.pollafacil.util.ValueUtil;
+import cl.aplacplac.pollafacil.vo.Equipo;
 import cl.aplacplac.pollafacil.vo.Fase;
 import cl.aplacplac.pollafacil.vo.Grupo;
 import cl.aplacplac.pollafacil.vo.Participante;
@@ -47,10 +48,9 @@ public class PollaFacilLoader {
 	public PollaFacilLoader load(PollaFacilConfiguracion configuracion) throws Exception {
 		this.setConfiguracion(configuracion);
 		contadorId = 0;
-		logger.info("##############################################");
-		logger.info("Configuracion recibida");
-		logger.info(configuracion);
-		logger.info("##############################################");
+		logger.info("\n*******************************************\n");
+		logger.info("Configuracion recibida" + configuracion);
+		logger.info("\n*******************************************\n");
 		loadPollaFacil();
 		return this;
 	}
@@ -101,7 +101,7 @@ public class PollaFacilLoader {
 				}
 			} else {
 				logger.error("\n*******************************************\n" 
-						+ "\nNo se logro cargar resultados: "
+						+ "No se logro cargar resultados: "
 						+ loadFile.getName() 
 						+ "\n*******************************************\n");
 			}
@@ -128,6 +128,7 @@ public class PollaFacilLoader {
 		case OCTAVOS:
 			loadPlanillasPorFase(Fase.OCTAVOS);
 		case PRIMERA:
+			loadPlanillasPorFase(Fase.PRIMERA);
 		}
 	}
 	
@@ -154,21 +155,23 @@ public class PollaFacilLoader {
 							getParticipante(name.trim(), fileEntry, fase);
 						} catch (Exception e) {
 							e.printStackTrace();
-							logger.error("\n*******************************************" + "Error cargando "
-									+ fileEntry.getName() + ": " + e.getMessage()
+							logger.error("\n*******************************************\n" 
+									+ "Error cargando " + fileEntry.getName() + ": " + e.getMessage()
 									+ "\n*******************************************\n");
 							throw e;
 						}
 					} else {
 						logger.error(
-								"\n*******************************************\n" + "\nNo se logro cargar planilla: "
-										+ fileEntry.getName() + "\n*******************************************\n");
+								"\n*******************************************\n" 
+								+ "No se logro cargar planilla: " + fileEntry.getName() 
+								+ "\n*******************************************\n");
 					}
 				}
 			}
 		} else {
 			Exception e = new Exception("readPath no puede ser Nulo!");
-			logger.error("\n*******************************************" + "\n" + e.getMessage()
+			logger.error("\n*******************************************" 
+					+ "\n" + e.getMessage()
 					+ "\n*******************************************\n");
 			throw e;
 		}
@@ -276,6 +279,9 @@ public class PollaFacilLoader {
 	 * @throws IOException
 	 */
 	private ArrayList<Partido> loadPartidos(Participante participante, File fileEntry, Fase fase) throws IOException {
+		logger.info("\n*******************************************");
+		logger.info("\nCargando: " + fileEntry.getName() + ", fase: " + fase.toString());
+		logger.info("\n*******************************************");
 		ArrayList<Partido> resultado = new ArrayList<>();
 		FileInputStream excelFile = new FileInputStream(fileEntry);
 		Workbook workbook = new XSSFWorkbook(excelFile);
@@ -317,6 +323,10 @@ public class PollaFacilLoader {
 	 * @throws Exception
 	 */
 	private ArrayList<Partido> getResultados(Fase fase, File loadFile) throws Exception {
+		logger.error("\n*******************************************\n" 
+				+ "\ngetResultados(): "
+				+ loadFile.getName() 
+				+ "\n*******************************************\n");
 		return getPartidos(fase, new XSSFWorkbook(new FileInputStream(loadFile)));
 	}
 
@@ -395,10 +405,10 @@ public class PollaFacilLoader {
 		switch (fase) {
 		case CUARTOS:
 			Sheet hojaC = workbook.getSheet(sheet);
-			resultado.add(getPartidoOtrasFases(hojaC, fase, 4));
-			resultado.add(getPartidoOtrasFases(hojaC, fase, 10));
-			resultado.add(getPartidoOtrasFases(hojaC, fase, 16));
-			resultado.add(getPartidoOtrasFases(hojaC, fase, 22));
+			resultado.add(getPartidoOtrasFases(hojaC, fase, 3));
+			resultado.add(getPartidoOtrasFases(hojaC, fase, 11));
+			resultado.add(getPartidoOtrasFases(hojaC, fase, 19));
+			resultado.add(getPartidoOtrasFases(hojaC, fase, 27));
 			break;
 		case FINAL:
 			break;
@@ -414,6 +424,7 @@ public class PollaFacilLoader {
 			resultado.add(getPartidoOtrasFases(hojaO, fase, 46));
 			break;
 		case PRIMERA:
+			logger.error("leyendo: " + sheet);
 			Sheet hojaP = workbook.getSheet(sheet);
 			resultado.add(getPartidoPrimeraFase(17, hojaP, fase, sheet));
 			resultado.add(getPartidoPrimeraFase(18, hojaP, fase, sheet));
@@ -442,6 +453,11 @@ public class PollaFacilLoader {
 	 * @return El partido cargado
 	 */
 	private Partido getPartidoPrimeraFase(int row, Sheet hoja, Fase fase, String grupoName) {
+		logger.info("\n*******************************************");
+		logger.info("\nrow: " + row);
+		logger.info("\nhoja: " + hoja.getSheetName());
+		logger.info("\ngrupoName: " + grupoName);
+		logger.info("\n*******************************************");
 		Partido partido = new Partido(true);
 		partido.setFase(fase);
 		partido.setLocal(this.pollafacil.getEquipo(getCell("F" + row, hoja).getStringCellValue()));
@@ -466,7 +482,16 @@ public class PollaFacilLoader {
 	private Partido getPartidoOtrasFases(Sheet hoja, Fase fase, int rowInicio) {
 		Partido partido = new Partido(true);
 		partido.setFase(fase);
-		partido.setLocal(this.pollafacil.getEquipo(getCell("B" + rowInicio, hoja).getStringCellValue()));
+		
+		Cell c = getCell("B" + rowInicio, hoja);
+		if(c == null)
+		{
+			System.out.println("ACA ESTA!!!");
+			throw new RuntimeException("ACA") ;
+		}
+		Equipo p = this.pollafacil.getEquipo(c.getStringCellValue());
+		
+		partido.setLocal(p);
 		partido.setVisita(this.pollafacil.getEquipo(getCell("B" + (rowInicio + 4), hoja).getStringCellValue()));
 
 		partido.setFecha(HSSFDateUtil.getJavaDate(getCell("B" + (rowInicio + 2), hoja).getNumericCellValue()));
@@ -563,14 +588,13 @@ public class PollaFacilLoader {
 					e.printStackTrace();
 					logger.error(
 							"\n*******************************************" 
-							+ "Error cargando " + loadFile.getName()
-							+ ": " + e.getMessage() + "\n*******************************************\n");
+							+ "\nError cargando " + loadFile.getName() + ": " + e.getMessage() 
+							+ "\n*******************************************\n");
 					throw e;
 				}
 			} else {
 				logger.error("\n*******************************************\n" 
-						+ "\nNo se logro cargar resultados: "
-						+ loadFile.getName() 
+						+ "\nNo se logro cargar resultados: " + loadFile.getName() 
 						+ "\n*******************************************\n");
 			}
 		} else {
@@ -654,7 +678,7 @@ public class PollaFacilLoader {
 				try {
 					Sheet hoja = new XSSFWorkbook(new FileInputStream(loadFile))
 							.getSheet(configuracion.getPrimeraFaseSheet());
-					for (int i = 4; i <= 18; i++) {
+					for (int i = 4; i <= 19; i++) {
 						String clasificado = getCell("M" + i, hoja).getStringCellValue();
 						if (clasificado != null && clasificado.trim().length() > 0) {
 							result.add(clasificado);

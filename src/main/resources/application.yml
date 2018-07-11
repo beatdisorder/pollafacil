@@ -5,28 +5,50 @@ pollaFacil:
 # 1: Fase de grupos, 2: Octavos, 3: cuartos, 4: semifinal, 5: tercer lugar, 6: final 
   faseActual: 3
   resultados:
-    resultFile: /DEVELOPER/repositorios/pollafacil/resultFile.xlsx
+    #resultFile: /DEVELOPER/repositorios/pollafacil/files/resultFile.xlsx
+    resultFile: /sdev3/repositorios/pollafacil/files/resultFile.xlsx
     reglasSheet: 'REGLAS'
     primeraFaseSheet: 'PRIMERA FASE'
     octavosFaseSheet: 'OCTAVOS'
     cuartosFaseSheet: 'CUARTOS'
+    semiFinalFaseSheet: 'SEMIFINAL'
+    tercerPuestoFaseSheet: 'TERCERPUESTO'
+    finalFaseSheet: 'FINAL'
     
 # Fase de grupo
   faseGrupo:
-    readPath: '/DEVELOPER/repositorios/pollafacil/planillas/fase_grupo'
+    #readPath: '/DEVELOPER/repositorios/pollafacil/files/planillas/fase_grupo'
+    readPath: '/sdev3/repositorios/pollafacil/files/planillas/primera'
     prefix: 'Pronosticos Primera Fase '
     sheets: 'GRUPO A-GRUPO B-GRUPO C-GRUPO D-GRUPO E-GRUPO F-GRUPO G-GRUPO H'
 # Octavos
   octavos:
-    readPath: '/DEVELOPER/repositorios/pollafacil/planillas/octavos'
-    prefix: 'Pronosticos_Octavos _Rusia_2018_'
+    #readPath: '/DEVELOPER/repositorios/pollafacil/files/planillas/octavos'
+    readPath: '/sdev3/repositorios/pollafacil/files/planillas/octavos'
+    prefix: 'Pronosticos_Octavos ' 
     sheet: 'Octavos'
 # Cuartos
   cuartos:
-    readPath: '/DEVELOPER/repositorios/pollafacil/planillas/cuartos'
-    prefix: 'Pronosticos_Cuartos_Rusia_2018_'
+    #readPath: '/DEVELOPER/repositorios/pollafacil/files/planillas/cuartos'
+    readPath: '/sdev3/repositorios/pollafacil/files/planillas/cuartos'
+    prefix: 'Pronosticos_Cuartos_'
     sheet: 'Cuartos'
-
+# Semifinal
+  semiFinal:   
+    readPath: '/sdev3/repositorios/pollafacil/files/planillas/semiFinal'
+    prefix: 'Pronosticos_Semifinales_Rusia_2018_'
+    sheet: 'Semis'
+# Semifinal
+  tercerPuesto:   
+    readPath: '/sdev3/repositorios/pollafacil/files/planillas/tercerPuesto'
+    prefix: 'Pronosticos_TercerPuesto_Rusia_2018_'
+    sheet: 'TercerPuesto'
+# Semifinal
+  final:   
+    readPath: '/sdev3/repositorios/pollafacil/files/planillas/final'
+    prefix: 'Pronosticos_Final_Rusia_2018_'
+    sheet: 'Final'
+    
 # Identificacion del servicio 
 spring:
   application:

@@ -42,6 +42,7 @@ public class PollaFacilMain {
 	// Extenciones de archivos permitidas
 	private final String[] xlsxExtension = new String[] { "xlsx", "xlsm" };
 
+	// Valores desde application.yml
 	// Dominio a mostrar dentro de la aplicacion
 	@Value("${pollaFacil.domain}")
 	private String domain;
@@ -73,6 +74,15 @@ public class PollaFacilMain {
 	// final
 	@Value("${pollaFacil.resultados.cuartosFaseSheet}")
 	private String cuartosFaseSheet;
+	// Propiedad con la que se espera encontrar la hoja con resultados de Semifinal	
+	@Value("${pollaFacil.resultados.semiFinalFaseSheet}")
+	private String semifinalFaseSheet;
+	// Propiedad con la que se espera encontrar la hoja con resultados de tercer puesto
+	@Value("${pollaFacil.resultados.tercerPuestoFaseSheet}")
+	private String tercerPuestoFaseSheet;
+	// Propiedad con la que se espera encontrar la hoja con resultados de la final
+	@Value("${pollaFacil.resultados.finalFaseSheet}")
+	private String finalFaseSheet;
 
 	// Propiedades de la Fase Grupo
 	// Directorio en el que se espera encontrar archivos de apuestas
@@ -83,7 +93,8 @@ public class PollaFacilMain {
 	@Value("${pollaFacil.faseGrupo.prefix}")
 	private String faseGrupoPrefix;
 	// Arreglo con propiedades que representan las hojas de la fase de grupo
-	private String[] faseGrupoSheets;
+	@Value("${pollaFacil.faseGrupo.sheets}")
+	private String faseGrupoSheets;
 
 	// Octavos
 	// Directorio en el que se espera encontrar archivos de apuestas
@@ -109,6 +120,42 @@ public class PollaFacilMain {
 	@Value("${pollaFacil.cuartos.sheet}")
 	private String cuartosSheet;
 	
+	// Semifinal
+	// Directorio en el que se espera encontrar archivos de apuestas
+	@Value("${pollaFacil.semiFinal.readPath}")
+	private String semifinalReadPath;
+	// Prefijo de los archivos de apuesta, se utiliza para extraer nombre de
+	// participantes
+	@Value("${pollaFacil.semiFinal.prefix}")
+	private String semifinalPrefix;
+	// Propiedad en la que se espera encontrar la hoja de apuestas
+	@Value("${pollaFacil.semiFinal.sheet}")
+	private String semifinalSheet;
+	
+	// Tercer Puesto
+	// Directorio en el que se espera encontrar archivos de apuestas
+	@Value("${pollaFacil.tercerPuesto.readPath}")
+	private String tercerPuestoReadPath;
+	// Prefijo de los archivos de apuesta, se utiliza para extraer nombre de
+	// participantes
+	@Value("${pollaFacil.tercerPuesto.prefix}")
+	private String tercerPuestoPrefix;
+	// Propiedad en la que se espera encontrar la hoja de apuestas
+	@Value("${pollaFacil.tercerPuesto.sheet}")
+	private String tercerPuestoSheet;
+
+	// Final
+	// Directorio en el que se espera encontrar archivos de apuestas
+	@Value("${pollaFacil.final.readPath}")
+	private String finalReadPath;
+	// Prefijo de los archivos de apuesta, se utiliza para extraer nombre de
+	// participantes
+	@Value("${pollaFacil.final.prefix}")
+	private String finalPrefix;
+	// Propiedad en la que se espera encontrar la hoja de apuestas
+	@Value("${pollaFacil.final.sheet}")
+	private String finalSheet;
+		
 	// Clase utilitaria para filtrar partidos
 	private static Util util = new Util();
 
@@ -148,48 +195,6 @@ public class PollaFacilMain {
 				+ "\n*******************************************\n");
 		pollaFacilLoaded = new PollaFacilLoader().load(getConfiguration()).getPollaFacil();
 		return index();
-	}
-
-	private PollaFacilConfiguracion getConfiguration() {
-		PollaFacilConfiguracion conf = new PollaFacilConfiguracion();
-		// Fase Grupo
-		conf.setFaseGrupoPrefix(faseGrupoPrefix);
-		conf.setFaseGrupoReadPath(faseGrupoReadPath);
-		conf.setFaseGrupoSheets(faseGrupoSheets);
-		
-		// Octavos de final
-		conf.setOctavosFaseSheet(octavosFaseSheet);
-		conf.setOctavosPrefix(octavosPrefix);
-		conf.setOctavosReadPath(octavosReadPath);
-		conf.setOctavosSheet(octavosSheet);
-		
-		// Cuartos de final
-		conf.setCuartosFaseSheet(cuartosFaseSheet);
-		conf.setCuartosPrefix(cuartosPrefix);
-		conf.setCuartosReadPath(cuartosReadPath);
-		conf.setCuartosSheet(cuartosSheet);
-		
-		// Fase actual
-		conf.setFaseActual(faseActual);
-		
-		// Reglas
-		conf.setReglasSheet(reglasSheet);
-		
-		// Primera fase
-		conf.setPrimeraFaseSheet(primeraFaseSheet);
-		
-		// FAse grupo
-		conf.setFaseGrupoSheets(faseGrupoSheets);
-		
-		// Archivo resultados
-		conf.setResultFile(resultFile);
-		
-		// Extensiones permitidas
-		conf.setXlsxExtension(xlsxExtension);
-		
-		// Nombre campeontato
-		conf.setCampeonato(campeonato);
-		return conf;
 	}
 
 	/**
@@ -243,5 +248,65 @@ public class PollaFacilMain {
 		mav.getModel().put("Util", util);
 		mav.getModel().putAll(this.pollaFacilLoaded.getReglasMaps());
 		return mav;
+	}
+	
+	private PollaFacilConfiguracion getConfiguration() {
+		PollaFacilConfiguracion conf = new PollaFacilConfiguracion();
+		// Fase Grupo
+		conf.setFaseGrupoPrefix(faseGrupoPrefix);
+		conf.setFaseGrupoReadPath(faseGrupoReadPath);
+		conf.setFaseGrupoSheets(faseGrupoSheets);
+		
+		// Octavos de final
+		conf.setOctavosFaseSheet(octavosFaseSheet);
+		conf.setOctavosPrefix(octavosPrefix);
+		conf.setOctavosReadPath(octavosReadPath);
+		conf.setOctavosSheet(octavosSheet);
+		
+		// Cuartos de final
+		conf.setCuartosFaseSheet(cuartosFaseSheet);
+		conf.setCuartosPrefix(cuartosPrefix);
+		conf.setCuartosReadPath(cuartosReadPath);
+		conf.setCuartosSheet(cuartosSheet);
+		
+		// Semifinal
+		conf.setSemifinalFaseSheet(semifinalFaseSheet);
+		conf.setSemifinalPrefix(semifinalPrefix);
+		conf.setSemifinalReadPath(semifinalReadPath);
+		conf.setSemifinalSheet(semifinalSheet);
+		
+		// TercerPuesto
+		conf.setTercerPuestoFaseSheet(tercerPuestoFaseSheet);
+		conf.setTercerPuestoPrefix(tercerPuestoPrefix);
+		conf.setTercerPuestoReadPath(tercerPuestoReadPath);
+		conf.setTercerPuestoSheet(tercerPuestoSheet);
+		
+		// Final
+		conf.setFinalFaseSheet(finalFaseSheet);
+		conf.setFinalPrefix(finalPrefix);
+		conf.setFinalReadPath(finalReadPath);
+		conf.setFinalSheet(finalSheet);
+		
+		// Fase actual
+		conf.setFaseActual(faseActual);
+		
+		// Reglas
+		conf.setReglasSheet(reglasSheet);
+		
+		// Primera fase
+		conf.setPrimeraFaseSheet(primeraFaseSheet);
+		
+		// FAse grupo
+		conf.setFaseGrupoSheets(faseGrupoSheets);
+		
+		// Archivo resultados
+		conf.setResultFile(resultFile);
+		
+		// Extensiones permitidas
+		conf.setXlsxExtension(xlsxExtension);
+		
+		// Nombre campeontato
+		conf.setCampeonato(campeonato);
+		return conf;
 	}
 }
