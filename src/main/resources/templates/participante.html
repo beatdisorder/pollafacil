@@ -98,8 +98,10 @@
 											<td align="left" th:text="${resultado.getVisita().getNombre()}">...</td>
 											<td align="right" th:text="${resultado.getStringGolesLocales()}">...</td>
 											<td align="left" th:text="${resultado.getStringGolesVisita()}">...</td>
-											<td align="right" th:text="${resultado.getResultadoReal().getStringGolesLocales()}">...</td>
-											<td align="left" th:text="${resultado.getResultadoReal().getStringGolesVisita()}">...</td>
+											<td align="right" th:if="${resultado.getResultadoReal() != null}" th:text="${resultado.getResultadoReal().getStringGolesLocales()}">...</td>
+											<td align="right" th:if="${resultado.getResultadoReal() == null}" >...</td>
+											<td align="left" th:if="${resultado.getResultadoReal() != null}" th:text="${resultado.getResultadoReal().getStringGolesVisita()}">...</td>
+											<td align="left" th:if="${resultado.getResultadoReal() == null}" >...</td>
 											<td th:if="${resultado.getFecha() != null}" th:text="${#dates.format(resultado.getFecha(), 'dd-MM-yyyy HH:mm')}">...</td>
 											<td th:if="${resultado.getFecha() == null}" th:text="--">...</td>
 											<td th:text="${resultado.getPuntos()}">...</td>
@@ -111,8 +113,10 @@
 											<td style="color: #000000;" align="left" th:text="${resultado.getVisita().getNombre()}">...</td>
 											<td style="color: #000000;" align="right" th:text="${resultado.getStringGolesLocales()}">...</td>
 											<td style="color: #000000;" align="left" th:text="${resultado.getStringGolesVisita()}">...</td>
-											<td style="color: #000000;" align="right" th:text="${resultado.getResultadoReal().getStringGolesLocales()}">...</td>
-											<td style="color: #000000;" align="left" th:text="${resultado.getResultadoReal().getStringGolesVisita()}">...</td>
+											<td style="color: #000000;" align="right" th:if="${resultado.getResultadoReal() != null}" th:text="${resultado.getResultadoReal().getStringGolesLocales()}">...</td>
+											<td style="color: #000000;" align="right" th:if="${resultado.getResultadoReal() == null}" >...</td>
+											<td style="color: #000000;" align="left" th:if="${resultado.getResultadoReal() != null}" th:text="${resultado.getResultadoReal().getStringGolesVisita()}">...</td>
+											<td style="color: #000000;" align="left" th:if="${resultado.getResultadoReal() == null}" >...</td>
 											<td style="color: #000000;" th:if="${resultado.getFecha() != null}" th:text="${#dates.format(resultado.getFecha(), 'dd-MM-yyyy HH:mm')}">...</td>
 											<td style="color: #000000;" th:if="${resultado.getFecha() == null}" th:text="--">...</td>
 											<td style="color: #000000;" th:text="${resultado.getPuntos()}">...</td>
@@ -124,8 +128,10 @@
 											<td style="color: #000000;" align="left" th:text="${resultado.getVisita().getNombre()}">...</td>
 											<td style="color: #000000;" align="right" th:text="${resultado.getStringGolesLocales()}">...</td>
 											<td style="color: #000000;" align="left" th:text="${resultado.getStringGolesVisita()}">...</td>
-											<td style="color: #000000;" align="right" th:text="${resultado.getResultadoReal().getStringGolesLocales()}">...</td>
-											<td style="color: #000000;" align="left" th:text="${resultado.getResultadoReal().getStringGolesVisita()}">...</td>
+											<td style="color: #000000;" align="right" th:if="${resultado.getResultadoReal() != null}" th:text="${resultado.getResultadoReal().getStringGolesLocales()}">...</td>
+											<td style="color: #000000;" align="right" th:if="${resultado.getResultadoReal() == null}" >...</td>
+											<td style="color: #000000;" align="left" th:if="${resultado.getResultadoReal() != null}" th:text="${resultado.getResultadoReal().getStringGolesVisita()}">...</td>
+											<td style="color: #000000;" align="left" th:if="${resultado.getResultadoReal() == null}" >...</td>
 											<td style="color: #000000;" th:if="${resultado.getFecha() != null}" th:text="${#dates.format(resultado.getFecha(), 'dd-MM-yyyy HH:mm')}">...</td>
 											<td style="color: #000000;" th:if="${resultado.getFecha() == null}" th:text="--">...</td>
 											<td style="color: #000000;" th:text="${resultado.getPuntos()}">...</td>
@@ -168,10 +174,14 @@
 											<td align="left" th:text="${resultado.getStringGolesVisita()}">...</td>
 											<td align="right" th:text="${resultado.getStringPenalesLocales()}">...</td>
 											<td align="left" th:text="${resultado.getStringPenalesVisita()}">...</td>
-											<td align="right" th:text="${resultado.getResultadoReal().getStringGolesLocales()}">...</td>
-											<td align="left" th:text="${resultado.getResultadoReal().getStringGolesVisita()}">...</td>
-											<td align="right" th:text="${resultado.getResultadoReal().getStringPenalesLocales()}">...</td>
-											<td align="left" th:text="${resultado.getResultadoReal().getStringPenalesVisita()}">...</td>
+											<td align="right" th:if="${resultado.getResultadoReal() != null}" th:text="${resultado.getResultadoReal().getStringGolesLocales()}">...</td>
+											<td align="right" th:if="${resultado.getResultadoReal() == null}" >...</td>
+											<td align="left" th:if="${resultado.getResultadoReal() != null}" th:text="${resultado.getResultadoReal().getStringGolesVisita()}">...</td>
+											<td align="left" th:if="${resultado.getResultadoReal() == null}" >...</td>
+											<td align="right" th:if="${resultado.getResultadoReal() != null}" th:text="${resultado.getResultadoReal().getStringPenalesLocales()}">...</td>
+											<td align="right" th:if="${resultado.getResultadoReal() == null}" >...</td>
+											<td align="left" th:if="${resultado.getResultadoReal() != null}" th:text="${resultado.getResultadoReal().getStringPenalesVisita()}">...</td>
+											<td align="left" th:if="${resultado.getResultadoReal() == null}" >...</td>
 											<td th:if="${resultado.getFecha() != null}" th:text="${#dates.format(resultado.getFecha(), 'dd-MM-yyyy HH:mm')}">...</td>
 											<td th:if="${resultado.getFecha() == null}" th:text="--">...</td>
 											<td th:text="${resultado.getPuntos()}">...</td>
@@ -184,10 +194,14 @@
 											<td style="color: #000000;" align="left" th:text="${resultado.getStringGolesVisita()}">...</td>
 											<td style="color: #000000;" align="right" th:text="${resultado.getStringPenalesLocales()}">...</td>
 											<td style="color: #000000;" align="left" th:text="${resultado.getStringPenalesVisita()}">...</td>
-											<td style="color: #000000;" align="right" th:text="${resultado.getResultadoReal().getStringGolesLocales()}">...</td>
-											<td style="color: #000000;" align="left" th:text="${resultado.getResultadoReal().getStringGolesVisita()}">...</td>
-											<td style="color: #000000;" align="right" th:text="${resultado.getResultadoReal().getStringPenalesLocales()}">...</td>
-											<td style="color: #000000;" align="left" th:text="${resultado.getResultadoReal().getStringPenalesVisita()}">...</td>
+											<td style="color: #000000;" align="right" th:if="${resultado.getResultadoReal() != null}" th:text="${resultado.getResultadoReal().getStringGolesLocales()}">...</td>
+											<td style="color: #000000;" align="right" th:if="${resultado.getResultadoReal() == null}" >...</td>
+											<td style="color: #000000;" align="left" th:if="${resultado.getResultadoReal() != null}" th:text="${resultado.getResultadoReal().getStringGolesVisita()}">...</td>
+											<td style="color: #000000;" align="left" th:if="${resultado.getResultadoReal() == null}" >...</td>
+											<td style="color: #000000;" align="right" th:if="${resultado.getResultadoReal() != null}" th:text="${resultado.getResultadoReal().getStringPenalesLocales()}">...</td>
+											<td style="color: #000000;" align="right" th:if="${resultado.getResultadoReal() == null}" >...</td>
+											<td style="color: #000000;" align="left" th:if="${resultado.getResultadoReal() != null}" th:text="${resultado.getResultadoReal().getStringPenalesVisita()}">...</td>
+											<td style="color: #000000;" align="left" th:if="${resultado.getResultadoReal() == null}" >...</td>
 											<td style="color: #000000;" th:if="${resultado.getFecha() != null}" th:text="${#dates.format(resultado.getFecha(), 'dd-MM-yyyy HH:mm')}">...</td>
 											<td style="color: #000000;" th:if="${resultado.getFecha() == null}" th:text="--">...</td>
 											<td style="color: #000000;" th:text="${resultado.getPuntos()}">...</td>
@@ -200,10 +214,14 @@
 											<td style="color: #000000;" align="left" th:text="${resultado.getStringGolesVisita()}">...</td>
 											<td style="color: #000000;" align="right" th:text="${resultado.getStringPenalesLocales()}">...</td>
 											<td style="color: #000000;" align="left" th:text="${resultado.getStringPenalesVisita()}">...</td>
-											<td style="color: #000000;" align="right" th:text="${resultado.getResultadoReal().getStringGolesLocales()}">...</td>
-											<td style="color: #000000;" align="left" th:text="${resultado.getResultadoReal().getStringGolesVisita()}">...</td>
-											<td style="color: #000000;" align="right" th:text="${resultado.getResultadoReal().getStringPenalesLocales()}">...</td>
-											<td style="color: #000000;" align="left" th:text="${resultado.getResultadoReal().getStringPenalesVisita()}">...</td>
+											<td style="color: #000000;" align="right" th:if="${resultado.getResultadoReal() != null}" th:text="${resultado.getResultadoReal().getStringGolesLocales()}">...</td>
+											<td style="color: #000000;" align="right" th:if="${resultado.getResultadoReal() == null}" >...</td>
+											<td style="color: #000000;" align="left" th:if="${resultado.getResultadoReal() != null}" th:text="${resultado.getResultadoReal().getStringGolesVisita()}">...</td>
+											<td style="color: #000000;" align="left" th:if="${resultado.getResultadoReal() == null}" >...</td>
+											<td style="color: #000000;" align="right" th:if="${resultado.getResultadoReal() != null}" th:text="${resultado.getResultadoReal().getStringPenalesLocales()}">...</td>
+											<td style="color: #000000;" align="right" th:if="${resultado.getResultadoReal() == null}" >...</td>
+											<td style="color: #000000;" align="left" th:if="${resultado.getResultadoReal() != null}" th:text="${resultado.getResultadoReal().getStringPenalesVisita()}">...</td>
+											<td style="color: #000000;" align="left" th:if="${resultado.getResultadoReal() == null}" >...</td>
 											<td style="color: #000000;" th:if="${resultado.getFecha() != null}" th:text="${#dates.format(resultado.getFecha(), 'dd-MM-yyyy HH:mm')}">...</td>
 											<td style="color: #000000;" th:if="${resultado.getFecha() == null}" th:text="--">...</td>
 											<td style="color: #000000;" th:text="${resultado.getPuntos()}">...</td>
